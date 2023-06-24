@@ -1,30 +1,20 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { PaymentGateway } from './interfaces/payment-gateway.interface';
-import { StripeGateway } from './interfaces/stripe.gateway';
-import { PayPalGateway } from './interfaces/paypal.gateway';
 import { ProcessPaymentDto } from './dtos/payment.dto';
+import { PaymentGatewayFactory } from './payment-gateway.factory';
 
 @Injectable()
 export class PaymentService {
-  constructor() {}
+  constructor(private readonly gatewayFactory: PaymentGatewayFactory) {}
 
-  async processPayment(paymentData: ProcessPaymentDto): Promise<boolean> {
-    let selectedGateway: PaymentGateway;
+  async processPayment({
+    method,
+    amount,
+  }: ProcessPaymentDto): Promise<boolean> {
+    const selectedGateway: PaymentGateway =
+      this.gatewayFactory.createPaymentGateway(method);
 
-    switch (paymentData.method) {
-      case 'stripe':
-        selectedGateway = new StripeGateway();
-        break;
-      case 'paypal':
-        selectedGateway = new PayPalGateway();
-        break;
-      default:
-        throw new NotFoundException('Invalid payment gateway');
-    }
-
-    const paymentResult = await selectedGateway.processPayment(
-      paymentData.amount,
-    );
+    const paymentResult = await selectedGateway.processPayment(amount);
     return paymentResult;
   }
 }
