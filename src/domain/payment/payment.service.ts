@@ -1,4 +1,4 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { PaymentGateway } from './interfaces/payment-gateway.interface';
 import { ProcessPaymentDto } from './dtos/payment.dto';
 import { PaymentGatewayFactory } from './payment-gateway.factory';
