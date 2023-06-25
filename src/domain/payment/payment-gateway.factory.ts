@@ -6,7 +6,7 @@ import { PayPalGateway } from './interfaces/paypal.gateway';
 @Injectable()
 export class PaymentGatewayFactory {
   createPaymentGateway(gateway: string): PaymentGateway {
-    switch (gateway) {
+    switch (gateway.toLocaleLowerCase()) {
       case 'stripe':
         return new StripeGateway();
       case 'paypal':
